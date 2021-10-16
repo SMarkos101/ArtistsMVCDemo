@@ -17,11 +17,25 @@ namespace ArtistsMVCDemo.Repositories
         }
         public IEnumerable<Album> GetAll()
         {
+            return _context.Albums.ToList();
+        }
+        public IEnumerable<Album> GetAllWithArtist()
+        {
             return _context.Albums
-                .Include(s=>s.Artist)
+                .Include(s => s.Artist)
                 .ToList();
         }
+
         public Album GetById(int? id)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            return _context.Albums.SingleOrDefault(a => a.ID == id); ;
+        }
+
+
+        public Album GetByIdWithArtist(int? id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
@@ -29,6 +43,8 @@ namespace ArtistsMVCDemo.Repositories
                 .Include(a => a.Artist)
                 .SingleOrDefault(a => a.ID == id); ;
         }
+
+
         public void Create(Album album)
         {
             _context.Albums.Add(album);
@@ -48,6 +64,13 @@ namespace ArtistsMVCDemo.Repositories
             _context.Entry(album).State = EntityState.Modified;
             _context.SaveChanges();
         }
+
+        public void Save()
+        {
+            _context.SaveChanges();
+        }
+
+        
 
         public void Dispose()
         {
